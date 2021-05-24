@@ -82,7 +82,6 @@ paths:
     get:
       tags:
         - Users
-        - Players
       summary: Return the favorite players that were saved by user
       parameters:
       responses:
@@ -100,7 +99,6 @@ paths:
       summary: save player in the favorites list of a user
       tags:
         - Users
-        - Players
       requestBody:
         content:
           application/json:
@@ -116,6 +114,29 @@ paths:
           description: The player successfully saved as favorite
         "401":
           description: user is not authorized
+  /players/playerFullDetails/{playerID}:
+    get:
+      summary: get full deatils about a player
+      description: useful for player page
+      tags:
+        - Players
+      parameters:
+        - in: path
+          name: playerID
+          description: players id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: data about the player
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerPreview"
+        "404":
+          description: playerID does not exists
+
   /teams/teamFullDetails/{teamId}:
     get:
       summary: get full deatils about a team
@@ -125,7 +146,7 @@ paths:
       parameters:
         - in: path
           name: teamId
-          description: team's id
+          description: teams id
           required: true
           schema:
             type: integer
@@ -137,7 +158,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Team"
         "404":
-          description: teamId is not exists
+          description: teamId does not exists
 components:
   schemas:
     User:
@@ -175,7 +196,7 @@ components:
           type: string
           description: user's email
           example: ladygaga@gmail.com
-        image-url:
+        imageurl:
           pattern: URL
           type: string
           description: URL for the user's image
@@ -189,14 +210,14 @@ components:
           minLength: 3
           maxLength: 8
           description: username conatins letters only
-          example: naorbe
+          example: ladygaga
         password:
           type: string
           minLength: 5
           maxLength: 10
           format: password
           description: password conatins at least one number and one special char
-          example: naor@55
+          example: lady@56
     League:
       type: object
       properties:

@@ -2,7 +2,8 @@
 const DButils = require("./routes/utils/DButils");
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
-require("dotenv").config();
+// require("dotenv").config();
+require("dotenv").config({path: 'project/.env'})
 //#endregion
 //#region express configures
 var express = require("express");
@@ -51,6 +52,7 @@ const auth = require("./routes/auth");
 const users = require("./routes/users");
 const league = require("./routes/league");
 const teams = require("./routes/teams");
+const players = require("./routes/players")
 
 //#endregion
 
@@ -71,15 +73,17 @@ app.use(function (req, res, next) {
 });
 //#endregion
 
-// ----> For cheking that our server is alive
+// ----> For checking that our server is alive
 app.get("/alive", (req, res) => res.send("I'm alive"));
 
 // Routings
 app.use("/users", users);
 app.use("/league", league);
 app.use("/teams", teams);
+app.use("/players", players)
 app.use(auth);
 
+// errors middleware
 app.use(function (err, req, res, next) {
   console.error(err);
   res.status(err.status || 500).send(err.message);
