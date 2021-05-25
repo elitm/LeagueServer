@@ -10,7 +10,6 @@ async function getGamesByTeamID(team_id) {
     return splitPastFutureGames(team_games);
   }
 
-<<<<<<< HEAD
 async function splitPastFutureGames(team_games) {
     let curr_date = new Date();
     let past_games = [];
@@ -28,8 +27,6 @@ async function splitPastFutureGames(team_games) {
     }  
 
   exports.getGamesByTeamID = getGamesByTeamID
-=======
->>>>>>> edaed07fc3fa106c468d38441c5e4346ed81c983
 
 async function getTeamName(team_id){
   try {
@@ -46,8 +43,5 @@ async function getTeamName(team_id){
 }
 
 exports.getGamesByTeamID = getGamesByTeamID
-<<<<<<< HEAD
 exports.getTeamName = getTeamName;
-=======
 exports.getTeamName = getTeamName;
->>>>>>> edaed07fc3fa106c468d38441c5e4346ed81c983
