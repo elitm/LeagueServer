@@ -1,0 +1,9 @@
+insert into users_db values('alice','1','alice','al','usa','al@com','google.com')
+insert into users_db values('bill','1','bill','bi','usa','al@com','google.com')
+insert into users_db values('gal','1','gal','ga','usa','al@com','google.com')
+
+insert into referees_db values('bill','...')
+
+insert into games_db values('85','293','2017-08-10 11:30:00','0','1','bloomfield','2')
+insert into games_db values('211','293','2022-08-10 12:30:00','0','1','bloomfield','2')
+insert into games_db values('293','360','2022-08-10 12:30:00','1','1','bloomfield','2')
