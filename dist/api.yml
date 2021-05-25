@@ -114,7 +114,30 @@ paths:
           description: The player successfully saved as favorite
         "401":
           description: user is not authorized
-  /players/playerFullDetails/{playerID}:
+  /players/PlayerPreview/{playerID}:
+    get:
+      summary: get only preview deatils about a player
+      description: useful for searc player 
+      tags:
+        - Players
+      parameters:
+        - in: path
+          name: playerID
+          description: players id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: preview data about the player
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerPreview"
+        "404":
+          description: playerID does not exists
+
+  /players/PlayerFullDetails/{playerID}:
     get:
       summary: get full deatils about a player
       description: useful for player page
@@ -133,9 +156,45 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PlayerPreview"
+                $ref: "#/components/schemas/PlayerFullDetails"
         "404":
           description: playerID does not exists
+  /users/favoriteGames:
+    get:
+      tags:
+        - Users
+      summary: Return the favorite games of the user
+      responses:
+        "200":
+          description: returned data about the user's favorites games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GamePreview"
+        "401":
+          description: user is not connected
+
+    post:
+      summary: save game in the favorites of a user
+      tags:
+        - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gameID:
+                  type: string
+                  description: game ID the user want to save
+                  example: 7
+      responses:
+        "201":
+          description: The game was successfully added to the favorite list
+        "401":
+          description: user is not connected
 
   /teams/teamFullDetails/{teamId}:
     get:
@@ -233,8 +292,14 @@ components:
           type: string
           description: current stage name
           example: Championship Round
+
     PlayerPreview:
       type: object
+      required:
+        - name
+        - image
+        - position
+        - team_name
       properties:
         name:
           type: string
@@ -253,6 +318,40 @@ components:
           type: string
           description: player's team name
           example: København
+
+    PlayerFullDetails:
+      type: object
+      required:
+        - common_name
+        - nationality
+        - birthday
+        - birthcountry
+        - height
+      properties:
+        common_name:
+          type: string
+          description: player common name
+          example: J. Forrest
+        nationality:          
+          type: string
+          description: player nationality
+          example: Scotland
+        birthday:
+          type: string
+          description: player birthday
+          example: 07/07/1991
+        birthcountry:
+          type: string
+          description: player birth country
+          example: Scotland
+        height:
+          type: int
+          description: player height
+          example: 175 cm
+        weight:
+          type: int
+          description: player weight
+          example: 80 kg
     Team:
       type: object
       properties:
@@ -265,3 +364,38 @@ components:
           items:
             type: object
             $ref: "#/components/schemas/PlayerPreview"
+
+    GamePreview:
+      type: object
+      properties:
+        local_team:
+          type: string
+          description: local team name
+          example: Midtjylland
+        visitor_team:
+          type: string
+          description: visitor team name
+          example: Midtjylland
+        local_team_score:
+          type: integer
+          description: local team score
+          example: 0
+        visitor_team_score: 
+          type: integer
+          description: visitor team score
+          example: 1
+        game_date:
+          type: string
+          description: date of the game
+          example: 07/07/1991
+        field_name:
+          type: string
+          description: field name of the game
+          example: Blomfield
+        referee_name:
+          type: string
+          description: referee name of the game
+          example: Tom          
+        
+
+

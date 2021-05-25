@@ -27,3 +27,20 @@ async function splitPastFutureGames(team_games) {
     }  
 
   exports.getGamesByTeamID = getGamesByTeamID
+
+async function getTeamName(team_id){
+  try {
+    const team = await axios.get(`${api_domain}/teams/${team_id}`, {
+      params: {
+        api_token: process.env.api_token,
+      },
+    });
+    return team.data.data.name;
+  }
+  catch{
+    throw {status:404, message: "could not find team name"};
+  }
+}
+
+exports.getGamesByTeamID = getGamesByTeamID
+exports.getTeamName = getTeamName;
