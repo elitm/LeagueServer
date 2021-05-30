@@ -83,6 +83,6 @@ async function getPlayersByTeam(team_id) {
 }
 
 exports.getPlayersByTeam = getPlayersByTeam;
- exports.getPlayersPreviewInfo = getPlayersPreviewInfo;
+exports.getPlayersPreviewInfo = getPlayersPreviewInfo;
 exports.getPlayersFullInfo = getPlayersFullInfo;
 

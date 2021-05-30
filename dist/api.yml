@@ -154,7 +154,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/Game"
         "401":
-          description: user is not connected
+          description: user is not authorized
 
     post:
       summary: save game in the favorites of a user
@@ -174,7 +174,27 @@ paths:
         "201":
           description: The game was successfully added to the favorite list
         "401":
-          description: user is not connected
+          description: user is not authorized
+
+  /users/lastSearch:
+    get:
+      tags:
+        - Users
+      summary: Return user's last search
+      responses:
+        "200":
+          description: user's last search return successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/lastSearch"
+        "204":
+          description: No search was found
+        
+        "401":
+          description: user is not authorized
 
   /teams/teamFullDetails/{teamId}:
     get:
@@ -470,6 +490,10 @@ components:
           type: string
           description: team name
           example: København
+        logo:
+          type: string
+          description: path of the logo team
+          example: https://cdn.sportmonks.com/images//soccer/teams/11/939.png
         players:
           type: array
           items:
@@ -583,3 +607,13 @@ components:
           type: int
           description: id of the game the event belongs to
           example: 10
+
+    lastSearch:
+      type: object
+      properties:
+        query:
+          type: string
+          description: last query the user search 
+          example: /James
+
+

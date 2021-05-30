@@ -56,6 +56,7 @@ const teams = require("./routes/teams");
 const players = require("./routes/players");
 const manage = require("./routes/manage");
 const games = require("./routes/games");
+const search = require("./routes/search");
 
 //#endregion
 
@@ -85,7 +86,9 @@ app.use("/league", league);
 app.use("/teams", teams);
 app.use("/players", players);
 app.use("/games", games);
-app.use("/manage", manage)
+app.use("/manage", manage);
+app.use("/search", search);
+
 app.use(auth);
 
 // errors middleware

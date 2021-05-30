@@ -12,8 +12,6 @@ async function getGamesByTeamID(team_id) {
   }
 
 
-
-
 async function getTeamName(team_id){
   try {
     const team = await axios.get(`${api_domain}/teams/${team_id}`, {

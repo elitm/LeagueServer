@@ -81,5 +81,24 @@ router.get("/favoriteGames", async (req, res, next) => {
   }
 });
 
+router.get("/lastSearch", async (req, res, next) => {
+  try {
+    if(req.session.username == null){
+      next(new error("user is not authorized"))
+    }
+    const query = req.session.query;
+    const lastSearch = req.session.lastSearch;
+    
+    if(query.length == 0){
+      res.status(200).send("no past search for this user")
+    }
+    else{
+      res.status(200).send(lastSearch);
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 
 module.exports = router;
