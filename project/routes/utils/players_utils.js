@@ -1,15 +1,18 @@
 const axios = require("axios");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 //  const TEAM_ID = 85;
+const LEAGUE_ID = 271;
 
 async function getPlayerIdsByTeam(team_id) {
   let player_ids_list = [];
   const team = await axios.get(`${api_domain}/teams/${team_id}`, {
     params: {
-      include: "squad",
+      include: "squad, league",
       api_token: process.env.api_token,
     },
   });
+  if(team.data.data.league.data.id != LEAGUE_ID)
+    throw {status: 403, message: "not in league 271"};
   team.data.data.squad.data.map((player) =>
     player_ids_list.push(player.player_id)
   );
@@ -58,6 +61,27 @@ function extractPreviewPlayerData(players_info) {
   });
 }
 
+function extractPreviewPlayerSearch(player_obj){
+
+  const { fullname, image_path, position_id } = player_obj;
+  let team = player_obj.team;
+  if (team == null) // if player doesnt have a team
+    return {
+      name: fullname,
+      image: image_path,
+      position: position_id,
+    };
+  else{
+    let name = player_obj.team.data.name;
+    return {
+      name: fullname,
+      image: image_path,
+      position: position_id,
+      team_name: name,
+    };
+    }
+}
+
 function extractFullPlayerData(players_info) {
   return players_info.map((player_info) => {
     const { fullname, image_path, position_id, common_name, nationality, birthdate, birthcountry, height} = player_info.data.data;
@@ -85,4 +109,5 @@ async function getPlayersByTeam(team_id) {
 exports.getPlayersByTeam = getPlayersByTeam;
 exports.getPlayersPreviewInfo = getPlayersPreviewInfo;
 exports.getPlayersFullInfo = getPlayersFullInfo;
+exports.extractPreviewPlayerSearch = extractPreviewPlayerSearch;
 

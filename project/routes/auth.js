@@ -35,6 +35,8 @@ router.post("/Register", async (req, res, next) => {
 
 router.post("/Login", async (req, res, next) => {
   try {
+    if (req.session && req.session.username != null) // there is a user already logged in
+      throw {status: 400, message:"user is already logged in, please logout"};
     const user = (
       await DButils.execQuery(
         `SELECT * FROM dbo.users_db WHERE username = '${req.body.username}'`

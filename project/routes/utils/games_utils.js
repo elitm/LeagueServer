@@ -39,7 +39,6 @@ async function gamesDetails(q_games){
     gameWithDetails.field = q_games.field;
     gameWithDetails.referee = await refereeUtils.getRefereeName(referee_id);
     
-  
   return gameWithDetails;
 }
 function extractRelevantGameData(games_info) {
@@ -110,3 +109,5 @@ exports.addEvent = addEvent;
 exports.splitPastFutureGames = splitPastFutureGames;
 exports.checkDatePassed = checkDatePassed;
 exports.getGames = getGames;
+exports.extractRelevantGameData = extractRelevantGameData;
+exports.gamesDetails = gamesDetails;

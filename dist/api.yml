@@ -564,7 +564,7 @@ components:
         players:
           type: array
           items:
-            $ref:  "#/components/schemas/PlayerFullDetails"
+            $ref:  "#/components/schemas/PlayerPreview"
         teams:
           type: array
           items:
