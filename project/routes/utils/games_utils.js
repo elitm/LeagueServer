@@ -15,22 +15,23 @@ async function getGamesInfo(games_ids_list) {
 async function getGame(game_id){
     const q_games = await DButils.execQuery(
         `select local_team_id, visitor_team_id, game_date, local_team_score, visitor_team_score, field, referee_id from games_db where game_id='${game_id}'`);
-    let GameDetail = await gamesDetails(q_games);
+    let GameDetail = await gamesDetails(q_games[0]);
     return GameDetail;    
 }
 
 async function gamesDetails(q_games){
     const gameWithDetails = [];
-    for(i=0; i < q_games.length; i++){
-        let local_team_id = q_games[i].local_team_id;
-        let visitor_team_id = q_games[i].visitor_team_id;
-        let referee_id = q_games[i].referee_id;
       
-        gameWithDetails[i] = q_games[i];
-        gameWithDetails[i].local_team = teamUtils.getTeamName(local_team_id);
-        gameWithDetails[i].visitor_team = teamUtils.getTeamName(visitor_team_id);
-        gameWithDetails[i].referee = refereeUtils.getRefereeName(referee_id);
-    }
+      let local_team_id = q_games.local_team_id;
+      let visitor_team_id = q_games.visitor_team_id;
+      let referee_id = q_games.referee_id;
+
+      gameWithDetails.local_team = await teamUtils.getTeamName(local_team_id);
+      gameWithDetails.visitor_team = await teamUtils.getTeamName(visitor_team_id);
+      gameWithDetails.game_date = q_games.game_date;
+      gameWithDetails.field = q_games.field;
+      gameWithDetails.referee = await refereeUtils.getRefereeName(referee_id);
+      
     
     return gameWithDetails;
 }

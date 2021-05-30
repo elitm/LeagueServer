@@ -10,6 +10,7 @@ tags:
   - name: Players
   - name: Teams
   - name: Games
+  - name: Search
 paths:
   /Register:
     post:
@@ -114,28 +115,6 @@ paths:
           description: The player successfully saved as favorite
         "401":
           description: user is not authorized
-  /players/PlayerPreview/{playerID}:
-    get:
-      summary: get only preview deatils about a player
-      description: useful for searc player 
-      tags:
-        - Players
-      parameters:
-        - in: path
-          name: playerID
-          description: players id
-          required: true
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: preview data about the player
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PlayerPreview"
-        "404":
-          description: playerID does not exists
 
   /players/PlayerFullDetails/{playerID}:
     get:
@@ -174,7 +153,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/GamePreview"
         "401":
-          description: user is not connected
+          description: user is not authorized
 
     post:
       summary: save game in the favorites of a user
@@ -194,7 +173,27 @@ paths:
         "201":
           description: The game was successfully added to the favorite list
         "401":
-          description: user is not connected
+          description: user is not authorized
+
+  /users/lastSearch:
+    get:
+      tags:
+        - Users
+      summary: Return user's last search
+      responses:
+        "200":
+          description: user's last search return successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/lastSearch"
+        "204":
+          description: No search was found
+        
+        "401":
+          description: user is not authorized
 
   /teams/teamFullDetails/{teamId}:
     get:
@@ -218,6 +217,33 @@ paths:
                 $ref: "#/components/schemas/Team"
         "404":
           description: teamId does not exists
+
+  /search/{name}:
+    get:
+      tags:
+        - Search
+      summary: search for plaery name or team name
+      description: get the result of player/team search
+      parameters: 
+        - name: name
+          in: path
+          required: true
+          description: the name to look for
+          schema:
+            type: string
+      responses:
+        '200':
+          description: search was succeeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/search"
+        '204':
+          description: couldn't find results
+        '400':
+          description: bad request
+
+
 components:
   schemas:
     User:
@@ -261,6 +287,7 @@ components:
           description: URL for the user's image
           example: https://cloudinary.com/
       description: Model containing user info
+
     LoginScheme:
       type: object
       properties:
@@ -277,6 +304,7 @@ components:
           format: password
           description: password conatins at least one number and one special char
           example: lady@56
+
     League:
       type: object
       properties:
@@ -292,14 +320,41 @@ components:
           type: string
           description: current stage name
           example: Championship Round
-
+    
     PlayerPreview:
+      type: object
+      properties:
+        name:
+          type: string
+          description: player's name
+          example: Sten Michael Grytebust
+        team_name:
+          type: string
+          description: player's team name
+          example: København
+        image:
+          type: string
+          description: player's image
+          format: URL
+          example: https://cdn.sportmonks.com/images/soccer/players/11/84587.png
+        position:
+          type: integer
+          description: player's position in team
+          example: 1
+
+
+    PlayerFullDetails:
       type: object
       required:
         - name
         - image
         - position
         - team_name
+        - common_name
+        - nationality
+        - birthday
+        - birthcountry
+        - height
       properties:
         name:
           type: string
@@ -318,16 +373,6 @@ components:
           type: string
           description: player's team name
           example: København
-
-    PlayerFullDetails:
-      type: object
-      required:
-        - common_name
-        - nationality
-        - birthday
-        - birthcountry
-        - height
-      properties:
         common_name:
           type: string
           description: player common name
@@ -359,6 +404,10 @@ components:
           type: string
           description: team name
           example: København
+        logo:
+          type: string
+          description: path of the logo team
+          example: https://cdn.sportmonks.com/images//soccer/teams/11/939.png
         players:
           type: array
           items:
@@ -391,11 +440,61 @@ components:
         field_name:
           type: string
           description: field name of the game
-          example: Blomfield
+          example: Bl0omfield
         referee_name:
           type: string
           description: referee name of the game
-          example: Tom          
+          example: Tom 
+          
+    search:
+      type: object
+      properties:
+        players:
+          type: array
+          items:
+            $ref:  "#/components/schemas/PlayerFullDetails"
+        teams:
+          type: array
+          items:
+            $ref: "#/components/schemas/Team"
+
+    lastSearch:
+      type: object
+      properties:
+        query:
+          type: string
+          description: last query the user search 
+          example: /James
         
+    eventType: 
+      type: string 
+      enum:
+        - goal
+        - injury
+        - offense
+        - offside
+        - redcard
+        - substitution
+        - yellowcard
 
-
+    Event:
+      type: object
+      properties:
+        event_time:
+          type: string
+          description: The date of the game
+          example: '2021-05-10 13:30:00'
+        
+        minute_in_game:
+          type: number
+          description: The minute where the event accured
+          example: 15
+          
+        event_description:
+          type: string 
+          description: Description of the event
+          example: yellow card for messi
+          
+        type:
+          $ref: '#/components/schemas/eventType'
+          example: 'offside'

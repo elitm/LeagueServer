@@ -44,4 +44,3 @@ async function getTeamName(team_id){
 
 exports.getGamesByTeamID = getGamesByTeamID
 exports.getTeamName = getTeamName;
-exports.getTeamName = getTeamName;
