@@ -12,6 +12,7 @@ const session = require("client-sessions");
 var logger = require("morgan");
 var cors = require("cors");
 
+
 var app = express();
 app.use(logger("dev")); //logger
 app.use(express.json()); // parse application/json
@@ -53,6 +54,7 @@ const users = require("./routes/users");
 const league = require("./routes/league");
 const teams = require("./routes/teams");
 const players = require("./routes/players");
+const manage = require("./routes/manage");
 const games = require("./routes/games");
 
 //#endregion
@@ -83,6 +85,7 @@ app.use("/league", league);
 app.use("/teams", teams);
 app.use("/players", players);
 app.use("/games", games);
+app.use("/manage", manage)
 app.use(auth);
 
 // errors middleware

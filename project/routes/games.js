@@ -2,21 +2,14 @@ var express = require("express");
 var router = express.Router();
 const games_utils = require("./utils/games_utils");
 
-
-
-router.get("/:gameID", async (req, res, next) => {
-    let game_details = [];
+router.get("/viewGames", async (req, res, next) => {
     try {
-      const game_details = await games_utils.getGamesInfo(
-        [req.params.gameID]
-      );
-      res.send(game_details);
+      const games = await games_utils.getGames();
+      res.send(games);
     } catch (error) {
       next(error);
     }
   });
-  
-  module.exports = router;
 
-  
 
+module.exports = router;

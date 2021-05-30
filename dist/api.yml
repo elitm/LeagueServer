@@ -10,6 +10,8 @@ tags:
   - name: Players
   - name: Teams
   - name: Games
+  - name: Search
+  - name: Manage
 paths:
   /Register:
     post:
@@ -65,7 +67,7 @@ paths:
   /league/getDetails:
     get:
       tags:
-        - league
+        - League
       summary: Return the details about the current league
       responses:
         "200":
@@ -114,28 +116,6 @@ paths:
           description: The player successfully saved as favorite
         "401":
           description: user is not authorized
-  /players/PlayerPreview/{playerID}:
-    get:
-      summary: get only preview deatils about a player
-      description: useful for searc player 
-      tags:
-        - Players
-      parameters:
-        - in: path
-          name: playerID
-          description: players id
-          required: true
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: preview data about the player
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PlayerPreview"
-        "404":
-          description: playerID does not exists
 
   /players/PlayerFullDetails/{playerID}:
     get:
@@ -172,7 +152,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GamePreview"
+                  $ref: "#/components/schemas/Game"
         "401":
           description: user is not connected
 
@@ -218,6 +198,113 @@ paths:
                 $ref: "#/components/schemas/Team"
         "404":
           description: teamId does not exists
+
+  /search/{name}:
+    get:
+      tags:
+        - Search
+      summary: search for plaery name or team name
+      description: get the result of player/team search
+      parameters: 
+        - name: name
+          in: path
+          required: true
+          description: the name to look for
+          schema:
+            type: string
+      responses:
+        '200':
+          description: search was succeeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/search"
+        '204':
+          description: couldn't find results
+        '400':
+          description: bad request
+
+  /manage/addGame:
+    post:
+      tags:
+        - Manage
+      summary: association rep adds new game
+      description: new game added
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/addGameScheme"
+      responses:
+        "200":
+          description: game added successfully
+        "400":
+          description: wrong input parameters
+  /manage/updateGameScores:
+    post:
+      tags:
+        - Manage
+      summary: association rep inserts game scores to game
+      description: scores added
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                game_id:
+                  type: int
+                  description: game id the user want to add the scores to
+                  example: 7
+                local_team_score:
+                  type: int
+                  description: local team score
+                  example: 1
+                visitor_team_score:
+                  type: int
+                  description: visitor team score
+                  example: 0
+
+      responses:
+        "200":
+          description: scores added successfully
+        "400":
+          description: wrong input parameters
+  /manage/addEvent:
+    post:
+      tags:
+        - Manage
+      summary: association rep adds event from game
+      description: new event added
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/Event"
+      responses:
+        "200":
+          description: event added successfully
+        "400":
+          description: wrong input parameters
+  
+  /games/viewGames:
+    get:
+      tags:
+        - Games
+      summary: view all games in the league
+      responses:
+        "200":
+          description: return all games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Game"
+
 components:
   schemas:
     User:
@@ -261,6 +348,7 @@ components:
           description: URL for the user's image
           example: https://cloudinary.com/
       description: Model containing user info
+
     LoginScheme:
       type: object
       properties:
@@ -277,6 +365,7 @@ components:
           format: password
           description: password conatins at least one number and one special char
           example: lady@56
+
     League:
       type: object
       properties:
@@ -292,14 +381,46 @@ components:
           type: string
           description: current stage name
           example: Championship Round
-
+        next_game:
+          type: object
+          description: next game in league
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
     PlayerPreview:
+      type: object
+      properties:
+        name:
+          type: string
+          description: player's name
+          example: Sten Michael Grytebust
+        team_name:
+          type: string
+          description: player's team name
+          example: København
+        image:
+          type: string
+          description: player's image
+          format: URL
+          example: https://cdn.sportmonks.com/images/soccer/players/11/84587.png
+        position:
+          type: integer
+          description: player's position in team
+          example: 1
+
+    PlayerFullDetails:
       type: object
       required:
         - name
         - image
         - position
         - team_name
+        - common_name
+        - nationality
+        - birthday
+        - birthcountry
+        - height
       properties:
         name:
           type: string
@@ -318,16 +439,6 @@ components:
           type: string
           description: player's team name
           example: København
-
-    PlayerFullDetails:
-      type: object
-      required:
-        - common_name
-        - nationality
-        - birthday
-        - birthcountry
-        - height
-      properties:
         common_name:
           type: string
           description: player common name
@@ -365,7 +476,7 @@ components:
             type: object
             $ref: "#/components/schemas/PlayerPreview"
 
-    GamePreview:
+    Game:
       type: object
       properties:
         local_team:
@@ -375,7 +486,7 @@ components:
         visitor_team:
           type: string
           description: visitor team name
-          example: Midtjylland
+          example: København
         local_team_score:
           type: integer
           description: local team score
@@ -387,15 +498,88 @@ components:
         game_date:
           type: string
           description: date of the game
-          example: 07/07/1991
+          example: '2019-09-10 11:30:00'
         field_name:
           type: string
           description: field name of the game
-          example: Blomfield
+          example: Bloomfield
         referee_name:
           type: string
           description: referee name of the game
-          example: Tom          
+          example: Tom 
+        event:
+          type: array
+          items:
+            $ref: "#/components/schemas/Event"
+
+    addGameScheme:
+      type: object
+      properties:
+        local_team_id:
+          type: int
+          example: 85
+        visitor_team_id:
+          type: int
+          example: 211
+        game_date:
+          type: string
+          description: date and time of the game
+          example: '07-07-2024 11:00:00'
+        field_name:
+          type: string 
+          description: field of the game
+          example: Blomfield
+        referee_id:
+          type: id
+          description: if of the referee for the game
+          example: 2
+
+    search:
+      type: object
+      properties:
+        players:
+          type: array
+          items:
+            $ref:  "#/components/schemas/PlayerFullDetails"
+        teams:
+          type: array
+          items:
+            $ref: "#/components/schemas/Team"
         
+    eventType: 
+      type: string 
+      enum:
+        - goal
+        - injury
+        - offense
+        - offside
+        - redcard
+        - substitution
+        - yellowcard
 
+    Event:
+      type: object
+      properties:
+        event_time:
+          type: string
+          description: date and time of game
+          example: '2017-08-10 11:30:00'
+        
+        minute_in_game:
+          type: int
+          description: The minute where the event accured
+          example: 15
+          
+        event_description:
+          type: string 
+          description: Description of the event
+          example: messi scores a goal
+          
+        type:
+          $ref: '#/components/schemas/eventType'
+          description: type of event 
 
+        game_id:
+          type: int
+          description: id of the game the event belongs to
+          example: 10

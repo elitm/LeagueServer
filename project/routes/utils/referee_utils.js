@@ -8,7 +8,7 @@ async function getRefereeName(referee_id){
 
     let full_name="";
     if(referee.length>0){
-        full_name= referee[0].firstname + referee[0].lastname;
+        full_name= referee[0].firstname + " " + referee[0].lastname;
     }
     return full_name;
 }
