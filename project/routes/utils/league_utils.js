@@ -34,7 +34,7 @@ async function getNextGame(){
 
   const game = await DButils.execQuery(`SELECT TOP 1 *
   FROM games_db
-  WHERE games_db.game_date > GETDATE()
+  WHERE games_db.game_date >GETDATE ()
   ORDER BY games_db.game_date `);
   const game_details = await games_utils.gamesDetails(game[0]);
   return await games_utils.extractRelevantGameData([game_details]);

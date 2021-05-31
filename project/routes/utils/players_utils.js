@@ -33,6 +33,7 @@ async function getPlayersFullInfo(players_ids_list){
 
 
 async function getPlayersInfo(players_ids_list) {
+  try{
   let promises = [];
   players_ids_list.map((id) =>
     promises.push(
@@ -46,6 +47,10 @@ async function getPlayersInfo(players_ids_list) {
   );
   let players_info = await Promise.all(promises);
   return players_info;
+    }
+    catch{
+      throw{status: 404, message: "player id does not exist"}
+    }
 }
 
 function extractPreviewPlayerData(players_info) {
@@ -84,7 +89,7 @@ function extractPreviewPlayerSearch(player_obj){
 
 function extractFullPlayerData(players_info) {
   return players_info.map((player_info) => {
-    const { fullname, image_path, position_id, common_name, nationality, birthdate, birthcountry, height} = player_info.data.data;
+    const { fullname, image_path, position_id, common_name, nationality, birthdate, birthcountry, height, weight} = player_info.data.data;
     const { name } = player_info.data.data.team.data;
     return {
       name: fullname,
@@ -95,7 +100,8 @@ function extractFullPlayerData(players_info) {
       nationality: nationality,
       birthday: birthdate,
       birthcountry: birthcountry,
-      height: height
+      height: height,
+      weight: weight
     };
   });
 }

@@ -43,6 +43,7 @@ router.post("/updateGameScores", async (req, res, next) => {
 
 router.post("/addEvent", async (req, res, next) => {
   try {
+
     await games_utils.addEvent(req.body.event_time, req.body.minute_in_game, req.body.event_description, req.body.type, req.body.game_id);
     res.status(201).send("event added successfully");
   } catch (error) {

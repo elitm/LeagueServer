@@ -10,7 +10,7 @@ router.get("/:name", async(req, res, next) =>{
     try{
         const search_res = await search_utils.search(req.params.name);
 
-        if(req.session.username != null){
+        if(req.session){ // save for lastSearch function - saves users last search
             req.session.query = req.params.name;
             req.session.lastSearch = search_res;
         }
