@@ -1,8 +1,8 @@
 const axios = require("axios");
 const DButils = require("./DButils");
 const games_utils = require("./games_utils");
-
 const LEAGUE_ID = 271;
+const STAGE_ID = 77447500;
 
 async function getLeagueDetails() {
   const league = await axios.get(
@@ -15,7 +15,8 @@ async function getLeagueDetails() {
     }
   );
   const stage = await axios.get(
-    `https://soccer.sportmonks.com/api/v2.0/stages/${league.data.data.current_stage_id}`,
+    // `https://soccer.sportmonks.com/api/v2.0/stages/${league.data.data.current_stage_id}`,
+    `https://soccer.sportmonks.com/api/v2.0/stages/${STAGE_ID}`,
     {
       params: {
         api_token: process.env.api_token,

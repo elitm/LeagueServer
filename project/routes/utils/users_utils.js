@@ -1,14 +1,15 @@
 const DButils = require("./DButils");
+const player_utils = require("./players_utils");
 
-async function markPlayerAsFavorite(user_id, player_id) {
+async function markPlayerAsFavorite(username, player_id) {
   await DButils.execQuery(
-    `insert into FavoritePlayers values ('${user_id}',${player_id}')`
+    `insert into favoritePlayers_db values ('${username}',${player_id})`
   );
 }
 
-async function getFavoritePlayers(user_id) {
+async function getFavoritePlayers(username) {
   const player_ids = await DButils.execQuery(
-    `select player_id from FavoritePlayers where user_id='${user_id}'`
+    `select player_id from favoritePlayers_db where username='${username}'`
   );
   return player_ids;
 }

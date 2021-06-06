@@ -23,36 +23,39 @@ router.use(async function (req, res, next) {
   }
 });
 
-// /**
-//  * This path gets body with playerId and save this player in the favorites list of the logged-in user
-//  */
-// router.post("/favoritePlayers", async (req, res, next) => {
-//   try {
-//     const username = req.session.username;
-//     const player_id = req.body.playerId;
-//     await users_utils.markPlayerAsFavorite(username, player_id);
-//     res.status(201).send("The player successfully saved as favorite");
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+/**
+ * This path gets body with playerId and save this player in the favorites list of the logged-in user
+ */
+router.post("/favoritePlayers", async (req, res, next) => {
+  try {
+    const username = req.session.username;
+    const player_id = req.body.playerId;
+    await players_utils.getPlayersPreviewInfo([player_id]); // will throw error if player id doesnt exist - otherwise we will continue and add player id to favs
+    await users_utils.markPlayerAsFavorite(username, player_id);
+    res.status(201).send("The player successfully saved as favorite");
+  } catch (error) {
+    next(error);
+  }
+});
 
-// /**
-//  * This path returns the favorites players that were saved by the logged-in user
-//  */
-// router.get("/favoritePlayers", async (req, res, next) => {
-//   try {
-//     const username = req.session.username;
-//     let favorite_players = {};
-//     const player_ids = await users_utils.getFavoritePlayers(username);
-//     let player_ids_array = [];
-//     player_ids.map((element) => player_ids_array.push(element.player_id)); //extracting the players ids into array
-//     const results = await players_utils.getPlayersInfo(player_ids_array);
-//     res.status(200).send(results);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+/**
+ * This path returns the favorites players that were saved by the logged-in user
+ */
+router.get("/favoritePlayers", async (req, res, next) => {
+  try {
+    const username = req.session.username;
+    const player_ids = await users_utils.getFavoritePlayers(username);
+    let player_ids_array = [];
+    player_ids.map((element) => player_ids_array.push(element.player_id)); //extracting the players ids into array
+    const results = await players_utils.getPlayersPreviewInfo(player_ids_array);
+    if (results && results.length == 0)
+      throw{status: 202, message: "user has not marked any players as favorite"};
+    else
+      res.status(200).send(results);
+  } catch (error) {
+    next(error);
+}
+});
 
 router.post("/favoriteGames", async (req, res, next) => {
   try {

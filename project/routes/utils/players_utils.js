@@ -67,7 +67,6 @@ function extractPreviewPlayerData(players_info) {
 }
 
 function extractPreviewPlayerSearch(player_obj){
-
   const { fullname, image_path, position_id } = player_obj;
   let team = player_obj.team;
   if (team == null) // if player doesnt have a team
@@ -78,12 +77,13 @@ function extractPreviewPlayerSearch(player_obj){
     };
   else{
     let name = player_obj.team.data.name;
-    return {
-      name: fullname,
-      image: image_path,
-      position: position_id,
-      team_name: name,
-    };
+    if(team.data.league && team.data.league.data.id == LEAGUE_ID)
+      return {
+        name: fullname,
+        image: image_path,
+        position: position_id,
+        team_name: name,
+      };
     }
 }
 

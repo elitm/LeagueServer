@@ -1,3 +1,82 @@
+// ------ users ------
+
+CREATE TABLE users_db(
+    username varchar(100) PRIMARY KEY not null ,
+    password varchar(100) not null ,
+    firstname varchar(100) not null ,
+    lastname varchar(100) not null ,
+    country varchar(150) not null ,
+    email varchar(150) not null ,
+    image_url varchar(200) not null
+)
+
+create table favoritePlayers_db(
+	username varchar(100) not null,
+	player_id int not null,
+	primary key ("username","player_id"),
+	foreign key (username) references users_db(username)
+)
+
+------ referees ------
+
+CREATE TABLE referees_db(
+	refereeID int identity PRIMARY KEY not null,
+	username varchar(100) not null,
+	qualification varchar(100) not null,
+	FOREIGN KEY (username) REFERENCES users_db(username)
+)
+
+// ------ games ------ 
+
+CREATE TABLE games_db(
+	game_id int identity PRIMARY KEY not null,
+	local_team_id int not null,
+	visitor_team_id int not null,
+	game_date datetime not null,
+	referee_id int not null,
+	local_team_score int,
+	visitor_team_score int,
+	field varchar(20) not null,
+	referee_id int FOREIGN KEY REFERENCES referees_db(refereeID)
+)
+
+create table favoriteGames_db(
+	username varchar(100) not null,
+	game_id int not null,
+	primary key ("username","game_id"),
+	foreign key (username) references users_db(username)
+)
+
+// ------ events ------ 
+
+create table event_type
+(
+   id varchar(15) PRIMARY KEY not null,
+   event_name varchar(15) not null UNIQUE
+);
+
+INSERT into event_type(id, event_name)
+values
+	('goal', 'goal'),
+	('offside', 'offside'),
+	('offense', 'offense'),
+	('redcard', 'redcard'),
+	('yellowcard', 'yellowcard'),
+	('injury', 'injury'),
+	('substitution', 'substitution');
+
+CREATE TABLE events_db
+(
+	event_id int PRIMARY KEY not null,
+	event_datetime datetime not null,
+	game_minute int not null,
+	event_description varchar(255),
+	event_name varchar(15) not null
+	constraint con FOREIGN KEY (event_name) references event_type(id),
+	game_id int FOREIGN KEY REFERENCES games_db(game_id)
+);
+
+
 insert into users_db values('alice','1','alice','al','usa','al@com','google.com')
 insert into users_db values('bill','1','bill','bi','usa','al@com','google.com')
 insert into users_db values('gal','1','gal','ga','usa','al@com','google.com')
