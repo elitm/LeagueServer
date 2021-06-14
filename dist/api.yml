@@ -506,6 +506,10 @@ components:
     Game:
       type: object
       properties:
+        game_id:
+          type: integer
+          description: id of game
+          example: 10
         local_team:
           type: string
           description: local team name
