@@ -55,9 +55,10 @@ async function getPlayersInfo(players_ids_list) {
 
 function extractPreviewPlayerData(players_info) {
   return players_info.map((player_info) => {
-    const { fullname, image_path, position_id } = player_info.data.data;
+    const { player_id, fullname, image_path, position_id } = player_info.data.data;
     const { name } = player_info.data.data.team.data;
     return {
+      id: player_id,
       name: fullname,
       image: image_path,
       position: position_id,
@@ -67,10 +68,11 @@ function extractPreviewPlayerData(players_info) {
 }
 
 function extractPreviewPlayerSearch(player_obj){
-  const { fullname, image_path, position_id } = player_obj;
+  const { player_id, fullname, image_path, position_id } = player_obj;
   let team = player_obj.team;
   if (team == null) // if player doesnt have a team
     return {
+      id: player_id,
       name: fullname,
       image: image_path,
       position: position_id,
@@ -79,6 +81,7 @@ function extractPreviewPlayerSearch(player_obj){
     let name = player_obj.team.data.name;
     if(team.data.league && team.data.league.data.id == LEAGUE_ID)
       return {
+        id: player_id,
         name: fullname,
         image: image_path,
         position: position_id,
@@ -89,9 +92,10 @@ function extractPreviewPlayerSearch(player_obj){
 
 function extractFullPlayerData(players_info) {
   return players_info.map((player_info) => {
-    const { fullname, image_path, position_id, common_name, nationality, birthdate, birthcountry, height, weight} = player_info.data.data;
+    const { player_id, fullname, image_path, position_id, common_name, nationality, birthdate, birthcountry, height, weight} = player_info.data.data;
     const { name } = player_info.data.data.team.data;
     return {
+      id: player_id,
       name: fullname,
       image: image_path,
       position: position_id,
