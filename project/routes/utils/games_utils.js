@@ -41,6 +41,8 @@ async function gamesDetails(q_games){
     let referee_id = q_games.referee_id;
 
     gameWithDetails.game_id = q_games.game_id;
+    gameWithDetails.local_team_id= local_team_id;
+    gameWithDetails.visitor_team_id = visitor_team_id;
     gameWithDetails.local_team = await teamUtils.getTeamName(local_team_id);
     gameWithDetails.visitor_team = await teamUtils.getTeamName(visitor_team_id);
     gameWithDetails.game_date = q_games.game_date;
@@ -53,12 +55,14 @@ async function gamesDetails(q_games){
 }
 function extractRelevantGameData(games_info) {
     return games_info.map((game_info) => {
-      const {game_id, local_team, visitor_team, game_date, local_team_score, visitor_team_score, field, referee} = game_info;
+      const {game_id, local_team, visitor_team, local_team_id, visitor_team_id, game_date, local_team_score, visitor_team_score, field, referee} = game_info;
       //const { name } = game_info.data.data.team.data;
       return {
         game_id: game_id,
         local_team: local_team,
         visitor_team: visitor_team,
+        local_team_id: local_team_id,
+        visitor_team_id: visitor_team_id,
         game_date: game_date,
         local_team_score: local_team_score,
         visitor_team_score: visitor_team_score, 
