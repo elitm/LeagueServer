@@ -27,8 +27,18 @@ async function getFavoriteGames(username) {
   return game_ids;
 }
 
+async function canAddFavoriteGame(username, gameID){
+  const row = await DButils.execQuery(
+    `select game_id from favoriteGames_db where username='${username}' and game_id=${gameID}`
+  );
+  if (row.length == 0) // this row does not exist in table, can add as favorite
+    return true;
+  return false;
+}
+
 
 exports.markPlayerAsFavorite = markPlayerAsFavorite;
 exports.getFavoritePlayers = getFavoritePlayers;
 exports.markGamesAsFavorite = markGamesAsFavorite;
 exports.getFavoriteGames = getFavoriteGames;
+exports.canAddFavoriteGame = canAddFavoriteGame;

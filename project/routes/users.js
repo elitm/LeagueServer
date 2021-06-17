@@ -65,8 +65,13 @@ router.post("/favoriteGames", async (req, res, next) => {
     const exists = await games_utils.gameIdExists(gameid);
     if (!exists) // check if game is in games_db
       throw{status: 202, message: "gameid does not exist"};
-    await users_utils.markGamesAsFavorite(username, gameid);
-    res.status(201).send("The game successfully saved as favorite");
+    const canAdd = await users_utils.canAddFavoriteGame(username, gameid);
+    if (!canAdd)
+      res.status(401).send("game is already saved as favorite for user")
+    else {
+      await users_utils.markGamesAsFavorite(username, gameid);
+      res.status(201).send("The game successfully saved as favorite");
+    }
   } catch (error) {
     next(error);
   }
