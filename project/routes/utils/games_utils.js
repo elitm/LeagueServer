@@ -13,9 +13,9 @@ async function getGames(){
   ids.map((id) => events_promises.push(getEventsOfGame(id)));
   let events = await Promise.all(events_promises);
   const games_info = await getGamesInfo(ids);
-  const split_games = await splitPastFutureGames(games_info);
+  const split_games = splitPastFutureGames(games_info);
   events = events.filter(item => item.length > 0); // remove empty arrays (games that dont have events)
-  return [split_games, events];
+  return [games_info, events];
 }
 
 async function getGamesInfo(games_ids_list) {
@@ -28,7 +28,7 @@ async function getGamesInfo(games_ids_list) {
   //function for one game query with game_id 
 async function getGame(game_id){
     const q_games = await DButils.execQuery(
-        `select game_id, local_team_id, visitor_team_id, game_date, local_team_score, visitor_team_score, field, referee_id from games_db where game_id='${game_id}'`);
+        `select local_team_id, visitor_team_id, game_date, local_team_score, visitor_team_score, field, referee_id from games_db where game_id='${game_id}'`);
     let GameDetail = await gamesDetails(q_games[0]);
     return GameDetail;    
 }
@@ -40,9 +40,6 @@ async function gamesDetails(q_games){
     let visitor_team_id = q_games.visitor_team_id;
     let referee_id = q_games.referee_id;
 
-    gameWithDetails.game_id = q_games.game_id;
-    gameWithDetails.local_team_id= local_team_id;
-    gameWithDetails.visitor_team_id = visitor_team_id;
     gameWithDetails.local_team = await teamUtils.getTeamName(local_team_id);
     gameWithDetails.visitor_team = await teamUtils.getTeamName(visitor_team_id);
     gameWithDetails.game_date = q_games.game_date;
@@ -55,14 +52,11 @@ async function gamesDetails(q_games){
 }
 function extractRelevantGameData(games_info) {
     return games_info.map((game_info) => {
-      const {game_id, local_team, visitor_team, local_team_id, visitor_team_id, game_date, local_team_score, visitor_team_score, field, referee} = game_info;
+      const {local_team, visitor_team, game_date, local_team_score, visitor_team_score, field, referee} = game_info;
       //const { name } = game_info.data.data.team.data;
       return {
-        game_id: game_id,
         local_team: local_team,
         visitor_team: visitor_team,
-        local_team_id: local_team_id,
-        visitor_team_id: visitor_team_id,
         game_date: game_date,
         local_team_score: local_team_score,
         visitor_team_score: visitor_team_score, 
@@ -111,12 +105,12 @@ async function splitPastFutureGames(team_games) {
   let all_games = []
   for(i=0; i < team_games.length; i++){
       if (team_games[i].game_date < curr_date)
-          past_games.push(team_games[i])
+          past_games.push(await gamesDetails(team_games[i]))
       else
-          future_games.push(team_games[i])
+          future_games.push(await gamesDetails(team_games[i]))
   }
-  all_games.push(past_games);
-  all_games.push(future_games);
+  all_games.push(extractRelevantGameData(past_games));
+  all_games.push(extractRelevantGameData(future_games));
   return all_games;
   } 
 
