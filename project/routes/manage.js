@@ -29,8 +29,10 @@ router.post("/addGame", async (req, res, next) => {
 
 router.post("/updateGameScores", async (req, res, next) => {
   try {
-    if (! await games_utils.checkDatePassed(req.body.game_id))
-      throw {status: 405, message: "cannot update scores of a game that has not happened yet"};
+    if (!await games_utils.gameIdExists(req.body.game_id))
+      res.status(404).send("game id does not exist");
+    else if (!await games_utils.checkDatePassed(req.body.game_id))
+      res.status(405).send("cannot update scores of a game that has not happened yet");
     else{
       await games_utils.updateScores(req.body.game_id, req.body.local_team_score, req.body.visitor_team_score);
       res.status(201).send("scores updated successfully");
