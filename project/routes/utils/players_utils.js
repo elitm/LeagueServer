@@ -2,6 +2,7 @@ const axios = require("axios");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 //  const TEAM_ID = 85;
 const LEAGUE_ID = 271;
+const teamUtils = require("./teams_utils");
 
 async function getPlayerIdsByTeam(team_id) {
   let player_ids_list = [];
@@ -86,6 +87,7 @@ function extractPreviewPlayerSearch(player_obj){
         image: image_path,
         position: position_id,
         team_name: name,
+        team_id: team.data.id, 
       };
     }
 }
