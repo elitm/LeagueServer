@@ -179,6 +179,23 @@ paths:
         "401":
           description: user is not authorized
 
+  /users/favoriteGamesForMainPage:
+    get:
+      tags:
+        - Users
+      summary: Return the favorite games of the user
+      responses:
+        "200":
+          description: returned data about 3 future games at user's favorites games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Game"
+        "401":
+          description: user is not authorized
+          
   /users/lastSearch:
     get:
       tags:

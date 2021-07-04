@@ -4118,3 +4118,10 @@ node_modules/xpath.js/sample.js
 node_modules/xpath.js/xpath.js
 node_modules/xpath.js/tests/following.xml
 node_modules/xpath.js/tests/test.js
+.env
+node_modules/iconv-lite/.idea/iconv-lite.iml
+node_modules/iconv-lite/.idea/modules.xml
+node_modules/iconv-lite/.idea/vcs.xml
+node_modules/iconv-lite/.idea/codeStyles/codeStyleConfig.xml
+node_modules/iconv-lite/.idea/codeStyles/Project.xml
+node_modules/iconv-lite/.idea/inspectionProfiles/Project_Default.xml

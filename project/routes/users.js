@@ -80,7 +80,7 @@ router.post("/favoriteGames", async (req, res, next) => {
 /**
  * This path returns the favorites games that were saved by the logged-in user
  */
-router.get("/favoriteGames", async (req, res, next) => {
+ router.get("/favoriteGames", async (req, res, next) => {
   try {
     const username = req.session.username;
     const games_ids = await users_utils.getFavoriteGames(username);
@@ -95,6 +95,27 @@ router.get("/favoriteGames", async (req, res, next) => {
     next(error);
   }
 });
+
+router.get("/favoriteGamesForMainPage", async (req, res, next) => {
+  try {
+    const username = req.session.username;
+    const games_ids = await users_utils.getFavoriteGames(username);
+    let games_ids_array = [];
+    games_ids.map((element) => games_ids_array.push(element.game_id)); //extracting the games ids into array
+    const results = await games_utils.getGamesInfo(games_ids_array); 
+    if (results && results.length != 0){
+      const all_games_spilt = await games_utils.splitPastFutureGames(results);
+      const all_future_games = all_games_spilt[1];
+      if(all_future_games && all_future_games.length != 0)
+        res.status(200).send(all_future_games.slice(0,3));
+    }
+    else
+      throw{status: 202, message: "user has not marked any games as favorite"};
+  } catch (error) {
+    next(error);
+  }
+});
+
 
 router.get("/lastSearch", async (req, res, next) => {
   try {
