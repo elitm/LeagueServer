@@ -78,6 +78,9 @@ function extractRelevantGameData(games_info) {
   }
 
 async function addGame(local_team_id, visitor_team_id, game_date, field_name, referee_id){
+  // if one of the teams doesnt exist - getTeamName function will throw an error
+  await teamUtils.getTeamName(local_team_id);
+  await teamUtils.getTeamName(visitor_team_id);
   await DButils.execQuery(
     `insert into games_db (local_team_id, visitor_team_id, game_date, field, referee_id) 
     values('${local_team_id}','${visitor_team_id}','${game_date}','${field_name}','${referee_id}')`

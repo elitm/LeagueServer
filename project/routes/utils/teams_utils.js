@@ -22,7 +22,7 @@ async function getTeamName(team_id){
     return team.data.data.name;
   }
   catch{
-    throw {status:404, message: "could not find team name"};
+    throw {status:404, message: "Team id does not exist"};
   }
 }
 exports.getGamesByTeamID = getGamesByTeamID
