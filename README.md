@@ -1,6 +1,6 @@
 <h3>League Management Website - Server</h3>
 
-Server side project for league management website. 
+Server side for league management website. 
 I created this project with my partner Chana Dalfan for a web university course. 
 
 -----
